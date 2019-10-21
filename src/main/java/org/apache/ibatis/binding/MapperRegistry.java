@@ -64,6 +64,7 @@ public class MapperRegistry {
         // 判重，确保只会加载一次不会被覆盖
         throw new BindingException("Type " + type + " is already known to the MapperRegistry.");
       }
+      //是否加载完成标识
       boolean loadCompleted = false;
       try {
         // 为每一个mapper接口创建一个MapperProxyFactory代理
