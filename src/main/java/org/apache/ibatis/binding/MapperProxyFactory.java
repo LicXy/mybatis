@@ -28,8 +28,9 @@ import org.apache.ibatis.session.SqlSession;
  * 其中每个Method与对应MapperMethod维护在一起。MapperMethod是mapper中具体映射语句节点的内部表示。
  */
 public class MapperProxyFactory<T> {
-
+  //mapper接口的类路径
   private final Class<T> mapperInterface;
+  //mapper接口方法映射mapper文件中的映射语句节点
   private final Map<Method, MapperMethod> methodCache = new ConcurrentHashMap<>();
 
   public MapperProxyFactory(Class<T> mapperInterface) {
