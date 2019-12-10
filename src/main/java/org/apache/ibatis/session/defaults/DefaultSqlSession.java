@@ -29,6 +29,7 @@ import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.exceptions.ExceptionFactory;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.apache.ibatis.executor.BatchResult;
+import org.apache.ibatis.executor.CachingExecutor;
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.result.DefaultMapResultHandler;
@@ -142,9 +143,12 @@ public class DefaultSqlSession implements SqlSession {
   @Override
   public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
     try {
-      //1. 获取MappedStatement
+      //1. 获取根据statement(接口路径 + 方法名称)获取MappedStatement实例
       MappedStatement ms = configuration.getMappedStatement(statement);
-      //2. 调用执行器的query方法进行查询
+      /**
+       * 调用执行器的query方法进行查询
+       * {@link CachingExecutor#query(MappedStatement,Object, RowBounds, ResultHandler)}
+       */
       return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error querying database.  Cause: " + e, e);
