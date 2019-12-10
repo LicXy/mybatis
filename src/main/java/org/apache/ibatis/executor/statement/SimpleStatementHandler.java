@@ -26,6 +26,7 @@ import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
+import org.apache.ibatis.executor.resultset.DefaultResultSetHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultSetType;
@@ -71,7 +72,12 @@ public class SimpleStatementHandler extends BaseStatementHandler {
   @Override
   public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
     String sql = boundSql.getSql();
+    //执行sql
     statement.execute(sql);
+    /**
+     * 对结果集进行解析
+     * {@link DefaultResultSetHandler#handleResultSets(java.sql.Statement)}
+     */
     return resultSetHandler.handleResultSets(statement);
   }
 

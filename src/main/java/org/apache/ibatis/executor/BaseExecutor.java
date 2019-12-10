@@ -164,6 +164,9 @@ public abstract class BaseExecutor implements Executor {
       if (list != null) {
         handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);
       } else {
+        /**
+         * 从数据库中查询数据
+         */
         list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key, boundSql);
       }
     } finally {
@@ -332,8 +335,12 @@ public abstract class BaseExecutor implements Executor {
     List<E> list;
     localCache.putObject(key, EXECUTION_PLACEHOLDER);
     try {
+      /**
+       * {@link SimpleExecutor#doQuery(MappedStatement,Object, RowBounds, ResultHandler, BoundSql)}
+       */
       list = doQuery(ms, parameter, rowBounds, resultHandler, boundSql);
     } finally {
+      //将EXECUTION_PLACEHOLDER移除, 等下将查询到的数据加入缓存
       localCache.removeObject(key);
     }
     localCache.putObject(key, list);

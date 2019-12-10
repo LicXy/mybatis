@@ -102,7 +102,9 @@ public class CachingExecutor implements Executor {
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql)
       throws SQLException {
-    //获取二级缓存
+    /**
+     * 获取二级缓存
+     */
     Cache cache = ms.getCache();
     if (cache != null) {
       //刷新缓存
@@ -112,7 +114,10 @@ public class CachingExecutor implements Executor {
         @SuppressWarnings("unchecked")
         List<E> list = (List<E>) tcm.getObject(cache, key); //尝试从缓存中获取数据
         if (list == null) {
-          //如果没有从头缓存中获取到数据,则从数据库中查询
+          /**
+           * 如果没有从头缓存中获取到数据,则从数据库中查询
+           * {@link BaseExecutor#query(MappedStatement, Object, RowBounds, ResultHandler, CacheKey,BoundSql)}
+           */
           list = delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
           //将查询后的数据加入缓存
           tcm.putObject(cache, key, list); // issue #578 and #116
@@ -121,6 +126,9 @@ public class CachingExecutor implements Executor {
       }
     }
     //如果缓存为空, 则去数据库里面查询
+    /**
+     * {@link BaseExecutor#query(MappedStatement,Object, RowBounds, ResultHandler,CacheKey, BoundSql)}
+     */
     return delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
   }
 

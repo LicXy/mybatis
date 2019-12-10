@@ -33,26 +33,26 @@ import org.apache.ibatis.session.Configuration;
  */
 public final class MappedStatement {
 
-  private String resource;
-  private Configuration configuration;
-  private String id;
+  private String resource;  //mapper配置文件名，如：UserMapper.xml
+  private Configuration configuration;  //全局配置
+  private String id;  //节点的id属性加命名空间,如：com.lic.ibatis.dao.UserMapper.getUserById
   private Integer fetchSize;
-  private Integer timeout;
-  private StatementType statementType;
-  private ResultSetType resultSetType;
-  private SqlSource sqlSource;
-  private Cache cache;
+  private Integer timeout;  //超时时间
+  private StatementType statementType; //操作SQL的对象的类型
+  private ResultSetType resultSetType;  //结果类型
+  private SqlSource sqlSource;  //sql语句
+  private Cache cache;  //二级缓存
   private ParameterMap parameterMap;
   private List<ResultMap> resultMaps;
   private boolean flushCacheRequired;
-  private boolean useCache;
-  private boolean resultOrdered;
-  private SqlCommandType sqlCommandType;
+  private boolean useCache;  //是否使用缓存，默认为true
+  private boolean resultOrdered; //结果是否排序
+  private SqlCommandType sqlCommandType; //sql语句的类型，如select、update、delete、insert
   private KeyGenerator keyGenerator;
   private String[] keyProperties;
   private String[] keyColumns;
   private boolean hasNestedResultMaps;
-  private String databaseId;
+  private String databaseId;  //数据库ID
   private Log statementLog;
   private LanguageDriver lang;
   private String[] resultSets;
