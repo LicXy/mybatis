@@ -25,5 +25,6 @@
 
     <mappers>
         <mapper resource="com\lic\ibatis\mapper\UserMapper.xml"/>
+        <mapper class="com.lic.ibatis.mapper.UserMapperAnn"></mapper>
     </mappers>
 </configuration>
