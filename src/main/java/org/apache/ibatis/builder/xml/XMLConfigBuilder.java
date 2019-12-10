@@ -491,6 +491,7 @@ public class XMLConfigBuilder extends BaseBuilder {
    */
   private void mapperElement(XNode parent) throws Exception {
     if (parent != null) {
+      //循环解析每一个<mapper>标签
       for (XNode child : parent.getChildren()) {
         /**
          *   如果要同时使用package自动扫描和通过mapper明确指定要加载的mapper，

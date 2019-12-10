@@ -51,8 +51,8 @@ public class SqlSessionFactoryBuilder {
        */
       XMLConfigBuilder parser = new XMLConfigBuilder(reader, environment, properties);
       /**
-       * 1. 解析配置文件,创建配置类Configuration
-       * 2. 创建SqlSessionFactory对象,并返回
+       * 1. parser.parse(): 解析配置文件,创建配置类Configuration
+       * 2. build():创建SqlSessionFactory对象,并返回
        */
       return build(parser.parse());
 

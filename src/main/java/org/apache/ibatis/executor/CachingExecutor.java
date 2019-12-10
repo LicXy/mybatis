@@ -78,7 +78,17 @@ public class CachingExecutor implements Executor {
 
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
+    // 将sql语句与参数封装在BoundSql实例中
     BoundSql boundSql = ms.getBoundSql(parameterObject);
+    /**
+     * 创建缓存key值, 用于存储此次查询的结果
+     *
+     * CacheKey组成:
+     *  1. statementId
+     *  2. 要求的查询结果集的范围（RowBounds的offset和limit）
+     *  3. 传给statement的sql语句
+     *  4. 传给statement的参数集
+     */
     CacheKey key = createCacheKey(ms, parameterObject, rowBounds, boundSql);
     return query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
   }
@@ -92,20 +102,25 @@ public class CachingExecutor implements Executor {
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql)
       throws SQLException {
+    //获取二级缓存
     Cache cache = ms.getCache();
     if (cache != null) {
+      //刷新缓存
       flushCacheIfRequired(ms);
       if (ms.isUseCache() && resultHandler == null) {
         ensureNoOutParams(ms, boundSql);
         @SuppressWarnings("unchecked")
-        List<E> list = (List<E>) tcm.getObject(cache, key);
+        List<E> list = (List<E>) tcm.getObject(cache, key); //尝试从缓存中获取数据
         if (list == null) {
+          //如果没有从头缓存中获取到数据,则从数据库中查询
           list = delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
+          //将查询后的数据加入缓存
           tcm.putObject(cache, key, list); // issue #578 and #116
         }
         return list;
       }
     }
+    //如果缓存为空, 则去数据库里面查询
     return delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
   }
 

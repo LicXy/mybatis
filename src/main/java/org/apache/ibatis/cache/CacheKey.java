@@ -68,11 +68,12 @@ public class CacheKey implements Cloneable, Serializable {
 
   public void update(Object object) {
     int baseHashCode = object == null ? 1 : ArrayUtil.hashCode(object);
-
+    //特征值数量
     count++;
+    //特征值的hashcode之和
     checksum += baseHashCode;
     baseHashCode *= count;
-
+    //hashcode = 扩展因子（37）* 原来的hashcode  + 新特征值的hashcode
     hashcode = multiplier * hashcode + baseHashCode;
 
     updateList.add(object);
@@ -92,7 +93,7 @@ public class CacheKey implements Cloneable, Serializable {
     if (!(object instanceof CacheKey)) {
       return false;
     }
-
+    //将特征值对象强转为CacheKey
     final CacheKey cacheKey = (CacheKey) object;
 
     if (hashcode != cacheKey.hashcode) {
@@ -104,7 +105,7 @@ public class CacheKey implements Cloneable, Serializable {
     if (count != cacheKey.count) {
       return false;
     }
-
+    //使用特征值对象进行比较
     for (int i = 0; i < updateList.size(); i++) {
       Object thisObject = updateList.get(i);
       Object thatObject = cacheKey.updateList.get(i);

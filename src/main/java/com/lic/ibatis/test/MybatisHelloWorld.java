@@ -13,11 +13,14 @@ public class MybatisHelloWorld {
   public static void main(String[] args) {
     try {
       Reader reader = Resources.getResourceAsReader("Configuration.xml");
-      SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
-      SqlSession session = sqlMapper.openSession();
+      SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+      SqlSession session = sqlSessionFactory.openSession();
       try {
         User user = (User) session.selectOne("com.lic.ibatis.dao.UserMapper.getUserById", 1);
         System.out.println(user.toString());
+
+        User user2 = (User) session.selectOne("com.lic.ibatis.dao.UserMapper.getUserById", 1);
+        System.out.println("第二次查询"+user2.toString());
       } finally {
         session.close();
       }

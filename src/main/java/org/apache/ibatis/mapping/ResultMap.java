@@ -36,18 +36,29 @@ import org.apache.ibatis.session.Configuration;
  */
 public class ResultMap {
   private Configuration configuration;
-
+  // resultMap的id属性
   private String id;
+  // resultMap的type属性,有可能是alias
   private Class<?> type;
+  // resultMap下的所有节点
   private List<ResultMapping> resultMappings;
+  // resultMap下的id节点比如<id property="id" column="user_id" />
   private List<ResultMapping> idResultMappings;
+  // resultMap下的构造器节点<constructor>
   private List<ResultMapping> constructorResultMappings;
+  // resultMap下的property节点比如<result property="password" column="hashed_password"/>
   private List<ResultMapping> propertyResultMappings;
+  //映射的列名
   private Set<String> mappedColumns;
+  //映射的javaBean属性名,所有映射不管是id、构造器或者普通的
   private Set<String> mappedProperties;
+  // 鉴别器
   private Discriminator discriminator;
+  // 是否有嵌套的resultMap比如association或者collection
   private boolean hasNestedResultMaps;
+  // 是否有嵌套的查询,也就是select属性
   private boolean hasNestedQueries;
+  // autoMapping属性,这个属性会覆盖全局的属性autoMappingBehavior
   private Boolean autoMapping;
 
   private ResultMap() {

@@ -132,6 +132,15 @@ public abstract class BaseExecutor implements Executor {
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
     BoundSql boundSql = ms.getBoundSql(parameter);
+    /**
+     * 创建缓存key值, 用于存储此次查询的结果
+     *
+     * CacheKey组成:
+     *  1. statementId
+     *  2. 要求的查询结果集的范围（RowBounds的offset和limit）
+     *  3. 传给statement的sql语句
+     *  4. 传给statement的参数集
+     */
     CacheKey key = createCacheKey(ms, parameter, rowBounds, boundSql);
     return query(ms, parameter, rowBounds, resultHandler, key, boundSql);
   }
@@ -148,7 +157,9 @@ public abstract class BaseExecutor implements Executor {
     }
     List<E> list;
     try {
+      //查询栈加一
       queryStack++;
+      //尝试从一级缓存中获取数据
       list = resultHandler == null ? (List<E>) localCache.getObject(key) : null;
       if (list != null) {
         handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);

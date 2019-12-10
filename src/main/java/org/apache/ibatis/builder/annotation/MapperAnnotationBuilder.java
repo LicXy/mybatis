@@ -153,6 +153,7 @@ public class MapperAnnotationBuilder {
        */
       parseCache();
       parseCacheRef();
+
       //获取接口的所有方法
       Method[] methods = type.getMethods();
       //遍历该接口中所有的方法, 进行加载
@@ -189,17 +190,22 @@ public class MapperAnnotationBuilder {
   }
 
   private void loadXmlResource() {
-   // Spring可能不知道真实的资源名称，因此我们检查一个标志防止再次加载资源两次, 此标志设置在XMLMapperBuilder＃bindMapperForNamespace
+   // Spring可能不知道真实的资源名称，因此我们检查一个标志防止再次加载资源两次,
+    // 此标志设置在XMLMapperBuilder＃bindMapperForNamespace
     if (!configuration.isResourceLoaded("namespace:" + type.getName())) {
+      //根据接口路径转化mapper文件路径
       String xmlResource = type.getName().replace('.', '/') + ".xml";
       // #1347
       InputStream inputStream = type.getResourceAsStream("/" + xmlResource);
       if (inputStream == null) {
-        // Search XML mapper that is not in the module but in the classpath.
+        // 搜索不在模块中但在类路径中的XML映射器。
         try {
           inputStream = Resources.getResourceAsStream(type.getClassLoader(), xmlResource);
         } catch (IOException e2) {
-          // ignore, resource is not required
+          /**
+           * 对于从package和class进来的mapper，如果找不到对应的文件，就忽略，因为这种情况下是允许SQL语句作为注解打在接口上的，所以xml文件不是必须的，
+           * 而对于直接声明的xml mapper文件，如果找不到的话会抛出IOException异常而终止，这在使用注解模式的时候需要注意
+           */
         }
       }
       if (inputStream != null) {

@@ -54,6 +54,12 @@ public class XMLStatementBuilder extends BaseBuilder {
   }
 
   public void parseStatementNode() {
+    /**
+     *  context:
+     *  <select id="getUserById" parameterType="int" resultType="com.lic.ibatis.entity.User">
+     *       select * from user where id = #{id}
+     *   </select>
+     */
     String id = context.getStringAttribute("id");
     String databaseId = context.getStringAttribute("databaseId");
 
@@ -110,6 +116,9 @@ public class XMLStatementBuilder extends BaseBuilder {
     String keyColumn = context.getStringAttribute("keyColumn");
     String resultSets = context.getStringAttribute("resultSets");
 
+    /**
+     * 将解析内容封装到MappedStatement中
+     */
     builderAssistant.addMappedStatement(id, sqlSource, statementType, sqlCommandType,
         fetchSize, timeout, parameterMap, parameterTypeClass, resultMap, resultTypeClass,
         resultSetTypeEnum, flushCache, useCache, resultOrdered,

@@ -286,7 +286,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
         .resultSetType(resultSetType)
         .flushCacheRequired(valueOrDefault(flushCache, !isSelect))
         .useCache(valueOrDefault(useCache, isSelect))
-        .cache(currentCache);
+        .cache(currentCache);  //二级缓存配置
 
     ParameterMap statementParameterMap = getStatementParameterMap(parameterMap, parameterType, id);
     if (statementParameterMap != null) {
@@ -294,6 +294,9 @@ public class MapperBuilderAssistant extends BaseBuilder {
     }
 
     MappedStatement statement = statementBuilder.build();
+    /**
+     * 将解析好的statement实例加入mappedStatements集合中
+     */
     configuration.addMappedStatement(statement);
     return statement;
   }

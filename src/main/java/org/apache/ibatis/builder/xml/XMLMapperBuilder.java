@@ -91,6 +91,9 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   public void parse() {
     if (!configuration.isResourceLoaded(resource)) {
+      /**
+       * 核心
+       */
       configurationElement(parser.evalNode("/mapper"));
       configuration.addLoadedResource(resource);
       bindMapperForNamespace();
@@ -112,18 +115,37 @@ public class XMLMapperBuilder extends BaseBuilder {
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
       builderAssistant.setCurrentNamespace(namespace);
+      /**
+       * 1. 解析缓存参照cache-ref; 参照缓存顾名思义，就是共用其他缓存的设置。
+       */
       cacheRefElement(context.evalNode("cache-ref"));
+      /**
+       * 2. 解析缓存cache
+       */
       cacheElement(context.evalNode("cache"));
+      /**
+       * 3. 解析参数映射parameterMap
+       */
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
+      /**
+       * 4. 解析结果集映射resultMap
+       */
       resultMapElements(context.evalNodes("/mapper/resultMap"));
+      /**
+       * 5. 解析sql片段
+       */
       sqlElement(context.evalNodes("/mapper/sql"));
+      /**
+       * 6. 解析CRUD语句
+       */
       buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
+
     } catch (Exception e) {
       throw new BuilderException("Error parsing Mapper XML. The XML location is '" + resource + "'. Cause: " + e, e);
     }
   }
 
-  private void buildStatementFromContext(List<XNode> list) {
+   private void buildStatementFromContext(List<XNode> list) {
     if (configuration.getDatabaseId() != null) {
       buildStatementFromContext(list, configuration.getDatabaseId());
     }
@@ -131,9 +153,14 @@ public class XMLMapperBuilder extends BaseBuilder {
   }
 
   private void buildStatementFromContext(List<XNode> list, String requiredDatabaseId) {
+    //遍历解析每条sql语句
     for (XNode context : list) {
+      //用每个sql标签的上下文对象创建statementParser解析器
       final XMLStatementBuilder statementParser = new XMLStatementBuilder(configuration, builderAssistant, context, requiredDatabaseId);
       try {
+        /**
+         * 解析SQL节点
+         */
         statementParser.parseStatementNode();
       } catch (IncompleteElementException e) {
         configuration.addIncompleteStatement(statementParser);
@@ -186,6 +213,16 @@ public class XMLMapperBuilder extends BaseBuilder {
     }
   }
 
+  /**
+   *  <cache-ref namespace=”com.someone.application.data.SomeMapper”/>
+   *
+   *  缓存参考因为通过namespace指向其他的缓存。所以会出现第一次解析的时候
+   *  指向的缓存还不存在的情况，所以需要在所有的mapper文件加载完成后进行二次处理，
+   *  不仅仅是缓存参考，其他的CRUD也一样。所以在XMLMapperBuilder.configuration中有很多的incompleteXXX，
+   *  这种设计模式类似于JVM GC中的mark and sweep，标记、然后处理。
+   *  所以当捕获到IncompleteElementException异常时，没有终止执行，而是将指向的缓存不存在的cacheRefResolver添加到configuration.incompleteCacheRef中。
+   * @param context
+   */
   private void cacheRefElement(XNode context) {
     if (context != null) {
       configuration.addCacheRef(builderAssistant.getCurrentNamespace(), context.getStringAttribute("namespace"));
@@ -198,6 +235,12 @@ public class XMLMapperBuilder extends BaseBuilder {
     }
   }
 
+  /**
+   * 默认情况下，mybatis使用的是永久缓存PerpetualCache，读取或设置各个属性默认值之后，调用builderAssistant.useNewCache构建缓存，
+   * 其中的CacheBuilder使用了build模式（在effective里面，建议有4个以上可选属性时，应该为对象提供一个builder便于使用），
+   * 只要实现org.apache.ibatis.cache.Cache接口，就是合法的mybatis缓存。
+   * @param context
+   */
   private void cacheElement(XNode context) {
     if (context != null) {
       String type = context.getStringAttribute("type", "PERPETUAL");

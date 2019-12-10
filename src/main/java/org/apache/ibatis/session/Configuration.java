@@ -780,6 +780,7 @@ public class Configuration {
     if (validateIncompleteStatements) {
       buildAllStatements();
     }
+    //在解析mapper时已经将sql语句标签解析封装为mappedStatement
     return mappedStatements.get(id);
   }
 
