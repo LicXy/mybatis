@@ -97,7 +97,7 @@ public class XMLMapperBuilder extends BaseBuilder {
       configurationElement(parser.evalNode("/mapper"));
       configuration.addLoadedResource(resource);
       /**
-       * 根据接口创建MapperProxyFactory工厂
+       * 根据接口创建MapperProxyFactory工厂，用于创建代理对象
        */
       bindMapperForNamespace();
     }

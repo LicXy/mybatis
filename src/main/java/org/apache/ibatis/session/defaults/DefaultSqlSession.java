@@ -143,7 +143,9 @@ public class DefaultSqlSession implements SqlSession {
   @Override
   public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
     try {
-      //1. 获取根据statement(接口路径 + 方法名称)获取MappedStatement实例
+      /**
+       * 1. 获取根据statement(接口路径 + 方法名称)获取MappedStatement实例
+       */
       MappedStatement ms = configuration.getMappedStatement(statement);
       /**
        * 调用执行器的query方法进行查询
