@@ -77,6 +77,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
+      //判断method是否是属于Object类，如果是则直接执行
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, args);
       } else if (method.isDefault()) {
@@ -89,7 +90,13 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     } catch (Throwable t) {
       throw ExceptionUtil.unwrapThrowable(t);
     }
+    /**
+     * 获取method对应的MapperMethod封装，直接执行execute。
+     */
     final MapperMethod mapperMethod = cachedMapperMethod(method);
+    /**
+     * 执行该方法对象
+     */
     return mapperMethod.execute(sqlSession, args);
   }
 

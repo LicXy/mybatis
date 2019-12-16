@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lic.ibatis.dao.UserMapper">
+<mapper namespace="com.lic.ibatis.mapper.StudentMapper">
 
-    <select id="getUserById" parameterType="int" resultType="com.lic.ibatis.entity.User">
+    <select id="getStudentrById" parameterType="int" resultType="com.lic.ibatis.entity.User">
         select * from user where id = #{id}
     </select>
 
-    <select id="getUserById2" parameterType="int" resultType="com.lic.ibatis.entity.User">
+    <select id="getStudentrById2" parameterType="int" resultType="com.lic.ibatis.entity.User">
         select * from user where id = #{id}
     </select>
 </mapper>

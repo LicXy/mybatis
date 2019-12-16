@@ -92,10 +92,13 @@ public class XMLMapperBuilder extends BaseBuilder {
   public void parse() {
     if (!configuration.isResourceLoaded(resource)) {
       /**
-       * 核心
+       * 解析mapper.xml中的<mapper></mapper>标签
        */
       configurationElement(parser.evalNode("/mapper"));
       configuration.addLoadedResource(resource);
+      /**
+       * 根据接口创建MapperProxyFactory工厂
+       */
       bindMapperForNamespace();
     }
 
@@ -114,29 +117,31 @@ public class XMLMapperBuilder extends BaseBuilder {
       if (namespace == null || namespace.equals("")) {
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
+      //设置名称空间
       builderAssistant.setCurrentNamespace(namespace);
+      //开始对mapper.xml中各个标签进行解析
       /**
-       * 1. 解析缓存参照cache-ref; 参照缓存顾名思义，就是共用其他缓存的设置。
+       * 1. 解析缓存映射<cache-ref></cache-ref>
        */
       cacheRefElement(context.evalNode("cache-ref"));
       /**
-       * 2. 解析缓存cache
+       * 2. 解析缓存<cache></cache>
        */
       cacheElement(context.evalNode("cache"));
       /**
-       * 3. 解析参数映射parameterMap
+       * 3. 解析参数映射<parameterMap></parameterMap>
        */
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
       /**
-       * 4. 解析结果集映射resultMap
+       * 4. 解析结果集映射<resultMap></resultMap>
        */
       resultMapElements(context.evalNodes("/mapper/resultMap"));
       /**
-       * 5. 解析sql片段
+       * 5. 解析<sql></sql>
        */
       sqlElement(context.evalNodes("/mapper/sql"));
       /**
-       * 6. 解析CRUD语句
+       * 6. 解析CRUD语句<select></select> |<insert></insert> |<update></update> |<delete></delete>  (重点)
        */
       buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
 

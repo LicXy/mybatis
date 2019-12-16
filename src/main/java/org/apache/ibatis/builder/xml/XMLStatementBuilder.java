@@ -58,7 +58,7 @@ public class XMLStatementBuilder extends BaseBuilder {
      *  context:
      *  <select id="getUserById" parameterType="int" resultType="com.lic.ibatis.entity.User">
      *       select * from user where id = #{id}
-     *   </select>
+     *  </select>
      */
     String id = context.getStringAttribute("id");
     String databaseId = context.getStringAttribute("databaseId");

@@ -2,6 +2,7 @@ package com.lic.ibatis.test;
 
 import com.lic.ibatis.dao.UserMapper;
 import com.lic.ibatis.entity.User;
+import org.apache.ibatis.binding.MapperProxy;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -18,6 +19,9 @@ public class MybatisHelloWorld2 {
       SqlSession session = sqlSessionFactory.openSession();
       try {
         UserMapper userMapper = session.getMapper(UserMapper.class);
+        /**
+         * {@link MapperProxy#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])}
+         */
         User user = userMapper.getUserById(1);
         System.out.println(user.toString());
       } finally {
